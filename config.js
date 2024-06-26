@@ -5,7 +5,7 @@ const date = Variable("", {
 function Clock() {
     return Widget.Box({
         child: Widget.CenterBox({
-            css: "background-color:#11111b;min-width:300px",
+            css: "background-color:#11111b;min-width:300px;border:2px solid red;border-radius:5px;margin-top:5px;margin-bottom:5px;box-shadow:20px 20px red",
             centerWidget: Widget.Label({
                 label: date.bind().as(v => v),
                 className: "clock",
