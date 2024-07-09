@@ -1,7 +1,20 @@
+.window {
+    background: transparent;
+}
+
 .clock {
-    /*font-family: "NotoMono Nerd Font";*/
     font-family: "Digital\-7 Mono";
-    font-size: 26px;
-    min-height: 20px;
+    font-size: 25px;
+    min-height: 15px;
     color: white;
+}
+
+.clock-box {
+    background-color: #313244;
+    min-width: 210px;
+    border: 2px solid #f38ba8;
+    border-radius: 5px;
+    margin-top: 5px;
+    margin-right: 5px;
+    /*margin-bottom: 5px;*/
 }
