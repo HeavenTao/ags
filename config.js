@@ -1,45 +1,26 @@
-const date = Variable("", {
-    poll: [1000, "date '+%Y-%m-%d %H:%M'"]
-})
+const entry = App.configDir + "/main.ts"
+const cli = App.configDir + "/cli/index.ts"
+const outdir = App.configDir + '/dist'
 
-function Clock() {
-    return Widget.Box({
-        child: Widget.CenterBox({
-            className: "clock-box",
-            centerWidget: Widget.Label({
-                label: date.bind().as(v => v),
-                className: "clock",
-            }),
-        })
-    })
+try {
+    console.log("Start Building ts")
+    await Utils.execAsync([
+        'bun', 'build', entry,
+        '--outdir', outdir,
+        '--external', 'resource://*',
+        '--external', 'gi://*'
+    ])
+    console.log("End Building ts")
+
+    console.log("Start Building scss")
+    await Utils.execAsync([
+        'bun', 'run', cli, App.configDir
+    ])
+    console.log("End Building scss")
+
+    console.log("Start")
+    await import(`file://${outdir}/main.js`)
+
+} catch (error) {
+    console.error(error)
 }
-
-function Right() {
-    return Widget.Box({
-        hpack: "end",
-        spacing: 8,
-        children: [
-            Clock()
-        ]
-    })
-}
-
-function Bar(monitor = 1) {
-    return Widget.Window({
-        monitor,
-        name: `bar-${monitor}`,
-        anchor: ['top', 'left', 'right'],
-        exclusivity: "exclusive",
-        className: "window",
-        child: Widget.CenterBox({
-            endWidget: Right()
-        })
-    })
-}
-
-App.config({
-    style: "./style.css",
-    windows: [Bar()],
-})
-
-export { }
