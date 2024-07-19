@@ -1,10 +1,12 @@
 import Clock from './clock'
+import Volume from './volume'
 
 function Right() {
     return Widget.Box({
         hpack: "end",
-        spacing: 8,
+        spacing: 0,
         children: [
+            Volume(),
             Clock(),
         ]
     })
