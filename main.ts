@@ -1,8 +1,10 @@
 import Bar from './widgets/bar'
 
+const bar = await Bar()
+
 App.config({
     style: "./dist/style.css",
-    windows: [Bar()],
+    windows: [bar],
 })
 
 export { }

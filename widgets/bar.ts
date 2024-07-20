@@ -1,18 +1,20 @@
 import Clock from './clock'
 import Volume from './volume'
 
-function Right() {
+async function Right() {
+    const volume = await Volume()
     return Widget.Box({
         hpack: "end",
         spacing: 0,
         children: [
-            Volume(),
+            volume,
             Clock(),
         ]
     })
 }
 
-function Bar(monitor = 0) {
+async function Bar(monitor = 0) {
+    const right = await Right()
     return Widget.Window({
         monitor,
         name: `bar-${monitor}`,
@@ -20,7 +22,7 @@ function Bar(monitor = 0) {
         exclusivity: "exclusive",
         className: "bar",
         child: Widget.CenterBox({
-            endWidget: Right()
+            endWidget: right
         })
     })
 }
