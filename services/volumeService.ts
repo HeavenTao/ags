@@ -1,5 +1,4 @@
 import * as _ from 'lodash'
-import _default from 'types/variable'
 
 class VolumeService extends Service {
     static {
@@ -13,20 +12,20 @@ class VolumeService extends Service {
             }
         )
     }
-    #state = Variable(false)
-    #num = Variable(0)
-    #setVolumeCb: _.DebouncedFunc<(num: number) => Promise<void>>
-    #setStateCb: _.DebouncedFunc<(state: boolean) => Promise<void>>
+    private _state = false
+    private _num = 0
+    private setVolumeCb: _.DebouncedFunc<(num: number) => Promise<void>>
+    private setStateCb: _.DebouncedFunc<(state: boolean) => Promise<void>>
 
-    get Num() {
-        return this.#num
+    get num() {
+        return this._num
     }
 
-    get State() {
-        return this.#state
+    get state() {
+        return this._state
     }
 
-    async #getVolumeNum() {
+    private async getVolumeNum() {
         let text = await Utils.execAsync([
             'amixer', 'get', 'Master'
         ])
@@ -40,7 +39,7 @@ class VolumeService extends Service {
         }
     }
 
-    async #getState() {
+    private async getState() {
         let text = await Utils.execAsync([
             'amixer', 'get', 'Master'
         ])
@@ -61,43 +60,48 @@ class VolumeService extends Service {
     constructor() {
         super()
 
-        this.#setVolumeCb = _.debounce(async (num: number) => {
+        this.setVolumeCb = _.debounce(async (num: number) => {
             await Utils.execAsync([
                 'amixer', 'sset', 'Master', `${num}%`
             ])
         }, 200)
 
-        this.#setStateCb = _.debounce(async (state: boolean) => {
+        this.setStateCb = _.debounce(async (state: boolean) => {
             await Utils.execAsync([
                 'amixer', 'sset', 'Master', state ? 'unmute' : 'mute'
             ])
         }, 200)
 
-        this.#init()
+        this.init()
     }
 
-    async #init() {
-        this.#num.value = await this.#getVolumeNum()
-        this.#state.value = await this.#getState()
+    private async init() {
+        this._num = await this.getVolumeNum()
+        this._state = await this.getState()
+        this.notify("num")
+        this.notify("state")
     }
 
     async setVolumeUp() {
-        if (this.#num.value + 1 <= 100) {
-            this.#num.value++
-            this.#setVolumeCb(this.#num.value)
+        if (this._num + 1 <= 100) {
+            this._num++
+            this.setVolumeCb(this._num)
+            this.notify("num")
         }
     }
 
     async setVolumeDown() {
-        if (this.#num.value - 1 >= 0) {
-            this.#num.value--
-            this.#setVolumeCb(this.#num.value)
+        if (this._num - 1 >= 0) {
+            this._num--
+            this.setVolumeCb(this._num)
+            this.notify("num")
         }
     }
 
     async switchState() {
-        this.#state.value = !this.#state.value;
-        this.#setStateCb(this.#state.value)
+        this._state = !this._state;
+        this.setStateCb(this._state)
+        this.notify("state")
     }
 }
 

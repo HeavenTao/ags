@@ -20,7 +20,7 @@ async function Volume() {
             spacing: 0,
             children: [
                 Widget.Icon({
-                    icon: volumeService.State.bind().as(v => {
+                    icon: volumeService.bind("state").as(v => {
                         if (v) {
                             return audioOnPic
                         } else {
@@ -30,7 +30,7 @@ async function Volume() {
                 }),
                 Widget.Label({
                     className: "volume",
-                    label: volumeService.Num.bind().as(v => `${v} %`)
+                    label: volumeService.bind("num").as(v => `${v} %`)
                 })
             ]
         })
